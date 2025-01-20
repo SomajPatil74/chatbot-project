@@ -2,20 +2,21 @@ const express = require("express");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+require('dotenv').config();  // Load environment variables from .env file
 
 const app = express();
-const PORT = 8090;
+const PORT = process.env.PORT || 8090;  // Use environment variable for port, fallback to 8090
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// MySQL connection
+// MySQL connection using environment variables
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "chatbot"
+    host: process.env.DB_HOST || "localhost",   // Default to localhost if no env variable is set
+    user: process.env.DB_USER || "root",       // Default to root if no env variable is set
+    password: process.env.DB_PASSWORD || "root",  // Default to root if no env variable is set
+    database: process.env.DB_NAME || "chatbot"  // Default to chatbot if no env variable is set
 });
 
 db.connect((err) => {
@@ -33,9 +34,7 @@ const predefinedResponses = [
     { query: "help", response: "How can I assist you today?" },
     { query: "what is your name?", response: "I am a chatbot!"},
     { query: "how are you?", response: "I'm doing great, thank you for asking!"},
-    { query: "what can you do?", response: "I can answer your questions!"},
-    
-    // We can add more queries and responses here as needed
+    { query: "what can you do?", response: "I can answer your questions!"}
 ];
 
 // Route1 : Get messages
